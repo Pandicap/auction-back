@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { BidsModule } from './bids/bids.module';
 import { AuctionsModule } from './auctions/auctions.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
