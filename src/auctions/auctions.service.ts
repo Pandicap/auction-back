@@ -5,20 +5,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Auction } from './entities/auction.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuctionsService {
   constructor(
     @InjectRepository(Auction) private auctionRepository: Repository<Auction>,
+    private readonly usersService: UsersService,
   ) {}
 
   async createAuction(
     createAuctionDto: CreateAuctionDto,
-    user: User,
+    user: any,
   ): Promise<Auction> {
+    const fullUser = await this.usersService.findById(user.userId);
     const auction = this.auctionRepository.create({
       ...createAuctionDto,
-      user,
+      user: fullUser,
     });
     await this.auctionRepository.save(auction);
     return auction;

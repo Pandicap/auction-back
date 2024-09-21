@@ -3,4 +3,5 @@ export class CreateAuctionDto {
   description: string;
   startingPrice: number;
   endTime: string;
+  images: any[];
 }

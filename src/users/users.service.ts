@@ -22,7 +22,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const user = new User();
-    const hashedPassword = await bcrypt.hash(createUserDto.password);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     user.firstName = createUserDto.firstName;
     user.lastName = createUserDto.lastName;
     user.username = createUserDto.username;
