@@ -6,27 +6,31 @@ import { Bid } from './entities/bid.entity';
 import { Repository } from 'typeorm';
 import { Auction } from 'src/auctions/entities/auction.entity';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class BidsService {
   constructor(
     @InjectRepository(Bid) private bidRepository: Repository<Bid>,
     @InjectRepository(Auction) private auctionRepository: Repository<Auction>,
+    private readonly usersService: UsersService,
   ) {}
 
-  async createBid(createBidDto: CreateBidDto, user: User): Promise<Bid> {
-    const { amount, auctionId } = createBidDto;
+  async createBid(createBidDto: CreateBidDto, user: any): Promise<Bid> {
+    const { amount, time, auctionId } = createBidDto;
     const auction = await this.auctionRepository.findOne({
       where: { id: auctionId },
     });
+    const fullUser = await this.usersService.findById(user.userId);
     if (!auction) {
       throw new NotFoundException('Auction not found');
     }
 
     const bid = this.bidRepository.create({
       amount,
+      time,
       auction,
-      user,
+      user: fullUser,
     });
 
     // TODO: change for other crud operations
@@ -49,6 +53,13 @@ export class BidsService {
     return bid;
   }
 
+  async findAllByUserId(id: number): Promise<Bid[]> {
+    return await this.bidRepository.find({
+      relations: ['user', 'auction'],
+      where: { user: { id } },
+    });
+  }
+
   async updateBid(
     id: number,
     updateBidDto: UpdateBidDto,
@@ -64,9 +75,9 @@ export class BidsService {
     return bid;
   }
 
-  async deleteBid(id: number, user: User): Promise<void> {
+  async deleteBid(id: number, user: any): Promise<void> {
     const bid = await this.findOne(id);
-    if (bid.user.id !== user.id) {
+    if (bid.user.id !== user.userId) {
       throw new NotFoundException('You are not the owner of this bid');
     }
     await this.bidRepository.remove(bid);

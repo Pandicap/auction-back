@@ -29,6 +29,12 @@ export class BidsController {
     return this.bidsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('for-user')
+  findForUser(@Request() req) {
+    return this.bidsService.findAllByUserId(req.user.userId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.bidsService.findOne(id);

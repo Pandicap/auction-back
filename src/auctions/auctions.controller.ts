@@ -29,6 +29,12 @@ export class AuctionsController {
     return this.auctionsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('for-user')
+  findForUser(@Request() req) {
+    return this.auctionsService.findAllByUserId(req.user.userId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.auctionsService.findOne(id);

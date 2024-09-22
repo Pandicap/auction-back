@@ -42,6 +42,13 @@ export class AuctionsService {
     return auction;
   }
 
+  async findAllByUserId(id: number): Promise<Auction[]> {
+    return await this.auctionRepository.find({
+      relations: ['user', 'bids'],
+      where: { user: { id } },
+    });
+  }
+
   async updateAuction(
     id: number,
     updateAuctionDto: UpdateAuctionDto,
@@ -57,9 +64,9 @@ export class AuctionsService {
     return auction;
   }
 
-  async deleteAuction(id: number, user: User): Promise<void> {
+  async deleteAuction(id: number, user: any): Promise<void> {
     const auction = await this.findOne(id);
-    if (auction.user.id !== user.id) {
+    if (auction.user.id !== user.userId) {
       throw new NotFoundException('You are not the owner of this auction');
     }
     await this.auctionRepository.remove(auction);
