@@ -19,7 +19,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ unique: true })
+  @Column({})
   password: string;
 
   @OneToMany(() => Auction, (auction) => auction.user)

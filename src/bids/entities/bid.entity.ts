@@ -13,9 +13,19 @@ export class Bid {
   @Column()
   time: string;
 
+  @Column({ default: false })
+  isWinning: boolean;
+
+  @Column({ default: false })
+  paymentDone: boolean;
+
   @ManyToOne(() => User, (user) => user.bids)
   user: User;
 
-  @ManyToOne(() => Auction, (auction) => auction.bids)
+  @ManyToOne(() => Auction, (auction) => auction.bids, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   auction: Auction;
 }

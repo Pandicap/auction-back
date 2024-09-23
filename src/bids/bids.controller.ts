@@ -55,4 +55,10 @@ export class BidsController {
   remove(@Param('id') id: number, @Request() req) {
     return this.bidsService.deleteBid(id, req.user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('complete-payment/:id')
+  completePayment(@Param('id') id: number) {
+    return this.bidsService.completePayment(id);
+  }
 }

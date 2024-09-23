@@ -23,10 +23,16 @@ export class Auction {
   startingPrice: number;
 
   @Column()
-  endTime: string;
+  endTime: Date;
 
-  @Column('text', { array: true, nullable: false })
-  images: string[];
+  @Column()
+  isValid: boolean;
+
+  @Column()
+  lastestBid: number;
+
+  @Column()
+  images: string;
 
   @OneToMany(() => Bid, (bid) => bid.auction)
   bids: Bid[];

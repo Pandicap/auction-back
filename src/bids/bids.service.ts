@@ -29,12 +29,14 @@ export class BidsService {
     const bid = this.bidRepository.create({
       amount,
       time,
+      isWinning: false,
       auction,
       user: fullUser,
     });
 
     // TODO: change for other crud operations
     await this.bidRepository.save(bid);
+    await this.auctionRepository.update(auction.id, { lastestBid: amount });
     return bid;
   }
 
@@ -81,5 +83,9 @@ export class BidsService {
       throw new NotFoundException('You are not the owner of this bid');
     }
     await this.bidRepository.remove(bid);
+  }
+
+  async completePayment(bidId: number) {
+    return await this.bidRepository.update(bidId, { paymentDone: true });
   }
 }
